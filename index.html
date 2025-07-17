@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoMarket - Sell Your Car</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --gray: #6b7280;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .auth-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--light);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(102, 63, 63, 0.5)), 
+                        url('C:\Users\adars\Downloads\project\images.jpeg') no-repeat center center;
+            background-size: cover;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .form-footer {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: var(--secondary);
+            border: 1px solid #a7f3d0;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .welcome-message {
+            margin-bottom: 2rem;
+        }
+
+        .add-car-btn {
+            margin-bottom: 2rem;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .car-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-image {
+            height: 200px;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .car-details {
+            padding: 1.5rem;
+        }
+
+        .car-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-price {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .car-condition {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .condition-excellent {
+            background-color: #d1fae5;
+            color: var(--secondary);
+        }
+
+        .condition-good {
+            background-color: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .condition-fair {
+            background-color: #fee2e2;
+            color: var(--danger);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .cars-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">AutoMarket</div>
+                <div class="auth-buttons">
+                    <button class="btn-outline" id="loginBtn">Login</button>
+                    <button class="btn-primary" id="registerBtn">Register</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Sell Your Car the Easy Way</h1>
+                <p>Connect with thousands of buyers and get the best price for your vehicle</p>
+                <button class="btn-primary" id="heroRegisterBtn">Get Started</button>
+            </div>
+        </section>
+
+        <!-- Registration Modal -->
+        <div class="modal" id="registerModal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Create an Account</h2>
+                <form id="registerForm">
+                    <div id="registerAlert" class="alert" style="display: none;"></div>
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirm Password</label>
+                        <input type="password" id="regConfirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Register</button>
+                    <div class="form-footer">
+                        Already have an account? <a href="#" id="showLogin">Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
+        <div class="modal" id="loginModal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Login to Your Account</h2>
+                <form id="loginForm">
+                    <div id="loginAlert" class="alert" style="display: none;"></div>
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Login</button>
+                    <div class="form-footer">
+                        Don't have an account? <a href="#" id="showRegister">Register</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Car Modal -->
+        <div class="modal" id="addCarModal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Add Your Car for Sale</h2>
+                <form id="addCarForm">
+                    <div id="carAlert" class="alert" style="display: none;"></div>
+                    <div class="form-group">
+                        <label for="carMake">Make</label>
+                        <input type="text" id="carMake" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carModel">Model</label>
+                        <input type="text" id="carModel" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carYear">Year</label>
+                        <input type="number" id="carYear" min="1900" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carPrice">Price ($)</label>
+                        <input type="number" id="carPrice" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carCondition">Condition</label>
+                        <select id="carCondition" required>
+                            <option value="">Select condition</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="carDescription">Description</label>
+                        <textarea id="carDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="carImage">Car Image</label>
+                        <input type="file" id="carImage" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Add Car</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard Section (Visible after login) -->
+        <section class="dashboard" id="dashboardSection">
+            <div class="welcome-message">
+                <h2>Welcome, <span id="userName"></span>!</h2>
+                <p>Manage your car listings below</p>
+            </div>
+            <button class="btn-primary add-car-btn" id="addCarBtn">Add New Car</button>
+            <div id="carsList">
+                <!-- Cars will be added here dynamically -->
+                <div class="alert" id="noCarsMessage" style="display: none;">
+                    You haven't added any cars yet. Click "Add New Car" to get started.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 AutoMarket. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const registerModal = document.getElementById('registerModal');
+        const loginModal = document.getElementById('loginModal');
+        const addCarModal = document.getElementById('addCarModal');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+        const closeBtns = document.querySelectorAll('.close-modal');
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const addCarForm = document.getElementById('addCarForm');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const userNameSpan = document.getElementById('userName');
+        const addCarBtn = document.getElementById('addCarBtn');
+        const carsList = document.getElementById('carsList');
+        const noCarsMessage = document.getElementById('noCarsMessage');
+
+        // App State
+        let currentUser = null;
+        let cars = [];
+
+        // Event Listeners
+        registerBtn.addEventListener('click', () => registerModal.style.display = 'flex');
+        loginBtn.addEventListener('click', () => loginModal.style.display = 'flex');
+        heroRegisterBtn.addEventListener('click', () => registerModal.style.display = 'flex');
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'flex';
+        });
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'flex';
+        });
+        addCarBtn.addEventListener('click', () => addCarModal.style.display = 'flex');
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                registerModal.style.display = 'none';
+                loginModal.style.display = 'none';
+                addCarModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === registerModal) registerModal.style.display = 'none';
+            if (e.target === loginModal) loginModal.style.display = 'none';
+            if (e.target === addCarModal) addCarModal.style.display = 'none';
+        });
+
+        // Register Form Submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            const registerAlert = document.getElementById('registerAlert');
+            
+            // Validation
+            if (password !== confirmPassword) {
+                registerAlert.textContent = 'Passwords do not match';
+                registerAlert.style.display = 'block';
+                registerAlert.className = 'alert alert-danger';
+                return;
+            }
+            
+            if (password.length < 6) {
+                registerAlert.textContent = 'Password must be at least 6 characters';
+                registerAlert.style.display = 'block';
+                registerAlert.className = 'alert alert-danger';
+                return;
+            }
+            
+            // In a real app, you would send this to a server
+            currentUser = { name, email };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Show success message
+            registerAlert.textContent = 'Registration successful!';
+            registerAlert.style.display = 'block';
+            registerAlert.className = 'alert alert-success';
+            
+            // Hide form after success
+            setTimeout(() => {
+                registerModal.style.display = 'none';
+                registerAlert.style.display = 'none';
+                
+                // Show dashboard
+                updateUIForLoggedInUser();
+            }, 1500);
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const loginAlert = document.getElementById('loginAlert');
+            
+            // In a real app, you would verify credentials with a server
+            // For demo purposes, we'll just check if password is at least 6 chars
+            if (password.length < 6) {
+                loginAlert.textContent = 'Invalid credentials';
+                loginAlert.style.display = 'block';
+                loginAlert.className = 'alert alert-danger';
+                return;
+            }
+            
+            currentUser = { name: 'Demo User', email };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Show success message
+            loginAlert.textContent = 'Login successful!';
+            loginAlert.style.display = 'block';
+            loginAlert.className = 'alert alert-success';
+            
+            // Hide form after success
+            setTimeout(() => {
+                loginModal.style.display = 'none';
+                loginAlert.style.display = 'none';
+                
+                // Show dashboard
+                updateUIForLoggedInUser();
+            }, 1500);
+        });
+
+        // Add Car Form Submission
+        addCarForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const make = document.getElementById('carMake').value;
+            const model = document.getElementById('carModel').value;
+            const year = document.getElementById('carYear').value;
+            const price = document.getElementById('carPrice').value;
+            const condition = document.getElementById('carCondition').value;
+            const description = document.getElementById('carDescription').value;
+            const imageFile = document.getElementById('carImage').files[0];
+            
+            const carAlert = document.getElementById('carAlert');
+            
+            if (!currentUser) {
+                carAlert.textContent = 'Please login first';
+                carAlert.style.display = 'block';
+                carAlert.className = 'alert alert-danger';
+                return;
+            }
+            
+            // In a real app, you would upload the image to a server
+            // For demo purposes, we'll use a placeholder image URL
+            const imageUrl = imageFile ? URL.createObjectURL(imageFile) : 'https://placehold.co/600x400';
+            
+            const newCar = {
+                id: Date.now(),
+                make,
+                model,
+                year,
+                price,
+                condition,
+                description,
+                imageUrl,
+                seller: currentUser.email
+            };
+            
+            cars.push(newCar);
+            localStorage.setItem('cars', JSON.stringify(cars));
+            
+            // Show success message
+            carAlert.textContent = 'Car added successfully!';
+            carAlert.style.display = 'block';
+            carAlert.className = 'alert alert-success';
+            
+            // Clear form and hide modal
+            setTimeout(() => {
+                addCarForm.reset();
+                addCarModal.style.display = 'none';
+                carAlert.style.display = 'none';
+                
+                // Refresh car list
+                displayUserCars();
+            }, 1500);
+        });
+
+        // Helper Functions
+        function updateUIForLoggedInUser() {
+            // Hide auth buttons
+            document.querySelector('.auth-buttons').style.display = 'none';
+            
+            // Show dashboard
+            dashboardSection.style.display = 'block';
+            
+            // Set user name
+            userNameSpan.textContent = currentUser.name;
+            
+            // Load user's cars
+            const savedCars = localStorage.getItem('cars');
+            if (savedCars) {
+                cars = JSON.parse(savedCars);
+            }
+            
+            displayUserCars();
+
+            // Add logout button
+            const logoutBtn = document.createElement('button');
+            logoutBtn.className = 'btn-outline';
+            logoutBtn.textContent = 'Logout';
+            logoutBtn.addEventListener('click', logoutUser);
+            
+            const dashboardHeader = document.querySelector('.dashboard .welcome-message');
+            dashboardHeader.appendChild(logoutBtn);
+        }
+
+        function displayUserCars() {
+            if (!currentUser) return;
+            
+            carsList.innerHTML = '';
+            
+            const userCars = cars.filter(car => car.seller === currentUser.email);
+            
+            if (userCars.length === 0) {
+                noCarsMessage.style.display = 'block';
+                return;
+            }
+            
+            noCarsMessage.style.display = 'none';
+            
+            const carsGrid = document.createElement('div');
+            carsGrid.className = 'cars-grid';
+            
+            userCars.forEach(car => {
+                const carCard = document.createElement('div');
+                carCard.className = 'car-card';
+                
+                let conditionClass = '';
+                switch(car.condition) {
+                    case 'excellent':
+                        conditionClass = 'condition-excellent';
+                        break;
+                    case 'good':
+                        conditionClass = 'condition-good';
+                        break;
+                    case 'fair':
+                        conditionClass = 'condition-fair';
+                        break;
+                }
+                
+                carCard.innerHTML = `
+                    <div class="car-image" style="background-image: url('${car.imageUrl}')"></div>
+                    <div class="car-details">
+                        <h3 class="car-title">${car.year} ${car.make} ${car.model}</h3>
+                        <p class="car-price">$${car.price}</p>
+                        <span class="car-condition ${conditionClass}">${car.condition}</span>
+                        <p class="car-description">${car.description}</p>
+                    </div>
+                `;
+                
+                carsGrid.appendChild(carCard);
+            });
+            
+            carsList.appendChild(carsGrid);
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Show auth buttons
+            document.querySelector('.auth-buttons').style.display = 'block';
+            
+            // Hide dashboard
+            dashboardSection.style.display = 'none';
+            
+            // Clear car list
+            carsList.innerHTML = '';
+        }
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+        });
+    </script>
+</body>
+</html>
